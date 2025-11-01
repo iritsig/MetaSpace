@@ -1,0 +1,45 @@
+# -----------------------
+# OS / IDE / Python
+# -----------------------
+.DS_Store
+*.swp
+*.swo
+*.log
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv*/
+venv/
+.env
+.env.*
+.vscode/
+.idea/
+
+# -----------------------
+# Project
+# -----------------------
+
+# Ignore tout sous Experimentation…
+Experimentation/*
+
+# …mais ré-autorise le dossier et la traversée des sous-dossiers
+!Experimentation/
+!Experimentation/**/
+
+# Garde uniquement ces notebooks précis
+!Experimentation/RQ1_Effectiveness/effectiveness.ipynb
+!Experimentation/RQ2_Effeciency/Effeciency.ipynb
+!Experimentation/RQ3_Feature_importance/FeatureImportance.ipynb
+!Experimentation/RQ4_Feature_Selection/feature_selection.ipynb
+!Experimentation/RQ5_Baseline/baseline.ipynb
+
+# Garde le dossier Datasets mais PAS les CSV
+!Experimentation/Datasets/**
+Experimentation/MetaSpace/*
+
+# Toujours ignorer ce dossier
+catboost_info/
