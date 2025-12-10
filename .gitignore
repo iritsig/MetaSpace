@@ -23,23 +23,26 @@ venv/
 # Project
 # -----------------------
 
-# Ignore tout sous Experimentation…
-Experimentation/*
+# Ignore tout sous Experiments…
+# Experiments/*
+Exeperiments/*
 
 # …mais ré-autorise le dossier et la traversée des sous-dossiers
-!Experimentation/
-!Experimentation/**/
+# !Experiments/
+# !Experiments/**/
 
 # Garde uniquement ces notebooks précis
-!Experimentation/RQ1_Effectiveness/effectiveness.ipynb
-!Experimentation/RQ2_Effeciency/Effeciency.ipynb
-!Experimentation/RQ3_Feature_importance/FeatureImportance.ipynb
-!Experimentation/RQ4_Feature_Selection/feature_selection.ipynb
-!Experimentation/RQ5_Baseline/baseline.ipynb
+# !Experiments/RQ1_Effectiveness/effectiveness.ipynb
+# !Experiments/RQ2_Effeciency/Effeciency.ipynb
+# !Experiments/RQ3_Feature_importance/FeatureImportance.ipynb
+# !Experiments/RQ4_Feature_Selection/feature_selection.ipynb
+# !Experiments/RQ5_Baseline/baseline.ipynb
 
 # Garde le dossier Datasets mais PAS les CSV
-!Experimentation/Datasets/**
-Experimentation/MetaSpace/*
+# !Experiments/Datasets/**
+# Experiments/MetaSpace/*
 
 # Toujours ignorer ce dossier
 catboost_info/
+
+

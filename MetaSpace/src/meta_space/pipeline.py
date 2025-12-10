@@ -21,11 +21,7 @@ Root_project = Path(__file__).resolve().parents[2]
 
 from embed_utils import build_column_texts, embed_texts, pick_model_checkpoint
 from golden_tools import _non_index_columns, golden_matrix_s1xs2
-from meta_features.classical_distances import compute_classical_distances
-from meta_features.spectral_features import compute_spectral_metrics_for_all
-from meta_features.syntax_string_features import compute_syntax_string_features
-from meta_features.topology_features import compute_topological_metrics, vector_to_point_cloud
-
+from meta_features.meta_features import  compute_distances_feat
 
 def read_csv_any(path: str | Path) -> pd.DataFrame:
     """Read a CSV with a robust delimiter heuristic."""
@@ -49,72 +45,15 @@ def compute_distances(
     inter_csv_path: Optional[Path] = None,
     flush_every: int = 1000,
 ) -> pd.DataFrame:
-    """Compute feature vectors for (S1_attr, S2_attr) pairs and attach true_match from a golden matrix."""
-    results = []
 
-    attrs1 = embedd_ds1.index.astype(str).tolist()
-    attrs2 = embedd_ds2.index.astype(str).tolist()
-    mat1 = embedd_ds1.to_numpy(dtype=float)
-    mat2 = embedd_ds2.to_numpy(dtype=float)
-
-    if mat1.ndim != 2 or mat2.ndim != 2:
-        raise ValueError("embedd_ds1/embedd_ds2 must be 2D matrices (rows=attributes, cols=dimensions).")
-    if mat1.shape[1] != mat2.shape[1]:
-        raise ValueError(f"Embedding dimensions differ: source={mat1.shape[1]} vs target={mat2.shape[1]}.")
-
-    has_golden = isinstance(golden_matrix, pd.DataFrame) and not golden_matrix.empty
-    if has_golden:
-        golden_matrix = golden_matrix.copy()
-        golden_matrix.index = golden_matrix.index.astype(str)
-        golden_matrix.columns = golden_matrix.columns.astype(str)
-
-    cnt = 0
-    for i, a1 in enumerate(attrs1):
-        v1 = mat1[i, :]
-        cloud_a1 = vector_to_point_cloud(v1)
-
-        for j, a2 in enumerate(attrs2):
-            v2 = mat2[j, :]
-            cloud_a2 = vector_to_point_cloud(v2)
-            t0 = time.time()
-
-            val = 0.0
-            if has_golden:
-                try:
-                    if a1 in golden_matrix.index and a2 in golden_matrix.columns:
-                        val = float(golden_matrix.at[a1, a2])
-                    else:
-                        val = float(golden_matrix.iloc[i, j])
-                except Exception:
-                    val = 0.0
-
-            row = {
-                "Attribute1": a1,
-                "Attribute2": a2,
-                "true_match": val,
-                "Category": category,
-                "Relation": relation,
-                "Dataset": dataset,
-                "Model": model_name,
-            }
-
-            row.update(compute_classical_distances(v1, v2))
-            row.update(compute_spectral_metrics_for_all(cloud_a1, cloud_a2, mat1, mat2))
-            for metric_option in ["euclidean", "cosine", "manhattan"]:
-                row.update(compute_topological_metrics(v1, v2, mat1, mat2, metric_option))
-            row.update(compute_syntax_string_features(a1, a2))
-
-            row["ExecutionTime"] = time.time() - t0
-            results.append(row)
-            cnt += 1
-
-            if inter_csv_path and (cnt % flush_every == 0):
-                pd.DataFrame(results).to_csv(inter_csv_path, index=False)
-
-    df = pd.DataFrame(results)
-    if inter_csv_path:
-        df.to_csv(inter_csv_path, index=False)
-    return df
+    return compute_distances_feat(embedd_ds1,
+    embedd_ds2,
+    golden_matrix,
+    category,
+    relation,
+    dataset,
+    model_name,
+    flush_every)
 
 
 @click.command(name="MetaSpace", context_settings={"show_default": True})

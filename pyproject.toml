@@ -30,6 +30,7 @@ nltk = ">=3.9,<4"
 xgboost = ">=2,<3"
 catboost = ">=1.2,<2"
 POT = ">=0.9.6,<0.10"
+scikit-learn = "1.4.2"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
