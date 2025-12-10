@@ -137,9 +137,17 @@ def meta_match(
         inter_csv_path=inter_csv,
         flush_every=2000,
     )
-    out_csv = out_path / f"Meta_Space__{dataset}__{Path(model_ckpt).name}.csv"
-    df_features.to_csv(out_csv, index=False)
-    click.echo(f"[OK] Saved: {out_csv}")
+    out_csv1 = out_path / f"Meta_Space_detailed__{dataset}__{Path(model_ckpt).name}.csv"
+    out_csv2 = out_path / f"Meta_Space__{dataset}__{Path(model_ckpt).name}.csv"
+    df_features.to_csv(out_csv1, index=False)
+    click.echo(f"[OK] Saved: {out_csv1}")
+    df_pivot = df_features.pivot_table(
+    index=["Attribute1", "Attribute2", "true_match", "Category", "Relation", "Dataset", "Model"],
+    columns="Feature",
+    values="Value"
+    ).reset_index() 
+    df_pivot.to_csv(out_csv2, index=False)
+    click.echo(f"[OK] Saved: {out_csv2}")
 
 
 if __name__ == "__main__":
